@@ -17,11 +17,10 @@ import os
 
 def f(x,epsmin,epsmax):
     import math
-    b = 1.
     if (x > epsmin):
-        b = 0.
-        if (x < epsmax): b = x**2*exp(x)/(exp(x)-1)**2
-    return b
+        return x**2*exp(x)/(exp(x)-1)**2 if (x < epsmax) else 0.
+    else:
+        return 1.
 
 #-------------------------------------------------------------------------------
 

@@ -52,8 +52,7 @@ def printnice(etam,bb,nfit,nderiv,orderstep,displpoints):
 def sortdispl(s,e):
     ss=[]
     ee=[]
-    ww=[]
-    for i in range(len(s)): ww.append(s[i])
+    ww = [s[i] for i in range(len(s))]
     ww.sort()
     for i in range(len(s)):
         ss.append(s[s.index(ww[i])])

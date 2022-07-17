@@ -56,13 +56,13 @@ ivbm=4
 ks0=max(ksene[ivbm-1][1])
 gw0=max(gwene[ivbm-1][1])
 
-for i in range(len(ksene)):
-    for j in range(len(ksene[i][1])):
-        ksene[i][1][j]=ksene[i][1][j]-ks0
+for item in ksene:
+    for j in range(len(item[1])):
+        item[1][j] = item[1][j] - ks0
 
-for i in range(len(gwene)):
-    for j in range(len(gwene[i][1])):
-        gwene[i][1][j]=gwene[i][1][j]-gw0
+for item_ in gwene:
+    for j in range(len(item_[1])):
+        item_[1][j] = item_[1][j] - gw0
 
 # Total DOS for KS and GW states from TDOS-KS-QP.OUT
 ene=[]
@@ -78,7 +78,7 @@ for line in open("TDOS-KS-QP.OUT"):
 ################################################################################
 ################################################################################
 ################################################################################
-    
+
 figcolor = 'white'
 dpi = 100
 fig = plt.figure(figsize=(20,10),dpi=dpi)
@@ -93,7 +93,6 @@ mpl.rcParams['axes.edgecolor'] = 'black'
 mpl.rcParams['axes.labelsize'] = '30'     # fontsize of the x any y labels
 mpl.rcParams['axes.labelcolor'] = 'black'
 mpl.rcParams['axes.axisbelow'] = 'True'   # whether axis gridlines and ticks are below
-                                          # the axes elements (lines, text, etc)
 mpl.rcParams['legend.fontsize'] = '25'
 mpl.rcParams['legend.fontsize'] = '25'
 
@@ -119,11 +118,11 @@ ax1.set_ylabel('Energy [Ha]')
 
 ymin=1000.0
 ymax=-1000.0
-for i in range(len(gwene)):
-    y=min(gwene[i][1])
+for item__ in gwene:
+    y = min(item__[1])
     if (y<ymin):
         ymin=y
-    y=max(gwene[i][1])
+    y = max(item__[1])
     if (y>ymax):
         ymax=y
 

@@ -20,8 +20,7 @@ import os
 def sortstrain(s,e):
     ss=[]
     ee=[]
-    ww=[]
-    for i in range(len(s)): ww.append(s[i])
+    ww = [s[i] for i in range(len(s))]
     ww.sort()
     for i in range(len(s)):
         ss.append(s[s.index(ww[i])])
@@ -40,48 +39,54 @@ def shell_value(variable,vlist,default):
 #-------------------------------------------------------------------------------
 
 def leggi(filin):
-    f = open(filin,"r")
-    x = [] ; y = []
-    lines = f.readlines()
-    y = lines[-1].strip().split()[0:3]
-    x = lines[-2].strip().split()[0:3]
-    f.close()
+    with open(filin,"r") as f:
+        x = []
+        y = []
+        lines = f.readlines()
+        y = lines[-1].strip().split()[:3]
+        x = lines[-2].strip().split()[:3]
     return x,y
 
 #-------------------------------------------------------------------------------
 
 def leggishort(filin):
-    f = open(filin,"r")
-    x = float(f.readline().strip().split()[0])
-    f.close()
+    with open(filin,"r") as f:
+        x = float(f.readline().strip().split()[0])
     return x
 
 #-------------------------------------------------------------------------------
 
 list_dir = glob.glob('rundir-*')
 
-xx = [] ; x0 = []
-y1 = [] ; y2 = [] ; y3 = [] 
-z1 = [] ; z2 = [] ; z3 = [] 
+xx = []
+x0 = []
+y1 = []
+y2 = []
+y3 = []
+z1 = []
+z2 = []
+z3 = [] 
 
 for idir in range(len(list_dir)):
-    r1 = [] ; r2 = []    
-    c1 = [] ; c2 = []
-    fileref = list_dir[idir]+'/GEOMETRY.OUT'
-    fileopt = list_dir[idir]+'/GEOMETRY_OPT.OUT'
-    if (str(os.path.exists(fileopt))=='False'): fileopt = fileref 
+    r1 = []
+    r2 = []
+    c1 = []
+    c2 = []
+    fileref = f'{list_dir[idir]}/GEOMETRY.OUT'
+    fileopt = f'{list_dir[idir]}/GEOMETRY_OPT.OUT'
+    if (str(os.path.exists(fileopt))=='False'): fileopt = fileref
     r1,r2 = leggi(fileref)
     c1,c2 = leggi(fileopt)
     y1.append(float(c2[0])-float(c1[0]))
     y2.append(float(c2[1])-float(c1[1]))
     y3.append(float(c2[2])-float(c1[2]))
-    xx.append(leggishort('strain-'+list_dir[idir][-2:]))
-    if (idir == 0 or idir == len(list_dir)-1):
+    xx.append(leggishort(f'strain-{list_dir[idir][-2:]}'))
+    if idir in [0, len(list_dir) - 1]:
         z1.append(float(r2[0])-float(r1[0]))
         z2.append(float(r2[1])-float(r1[1]))
         z3.append(float(r2[2])-float(r1[2]))
-        x0.append(leggishort('strain-'+list_dir[idir][-2:]))
-    
+        x0.append(leggishort(f'strain-{list_dir[idir][-2:]}'))
+
 ylabel  = r'Relative coordinate [crystal]'
 xlabel  = r'Lagrangian strain'
 
@@ -133,7 +138,7 @@ plt.rcParams.update(params)
 plt.subplots_adjust(left=0.22, right=0.78,
                     bottom=0.18, top=0.88,
                     wspace=None, hspace=None)
-                    
+
 yfmt = ptk.ScalarFormatter(useOffset=True,useMathText=True)
 
 fig  = matplotlib.pyplot.figure(1, figsize=(8,5.5)) 
@@ -144,7 +149,7 @@ ax.text(0.5,-0.13,xlabel,size=fontlabel,
         transform=ax.transAxes,ha='center',va='center',rotation=0)
 ax.text(-0.23,0.5,ylabel,size=fontlabel,
         transform=ax.transAxes,ha='center',va='center',rotation=90)
- 
+
 for line in ax.get_xticklines() + ax.get_yticklines():
     line.set_markersize(6)
     line.set_markeredgewidth(2)      
@@ -176,9 +181,7 @@ plt.legend(bbox_to_anchor=(1.03, 1), loc=2, borderaxespad=0.)
 
 ax.yaxis.set_major_formatter(yfmt)
 
-ylimits = []
-for i in range(1,len(sys.argv)): ylimits.append(float(sys.argv[i]))
-
+ylimits = [float(sys.argv[i]) for i in range(1,len(sys.argv))]
 if (len(ylimits) == 1): ymin = float(ylimits[0])
 if (len(ylimits) > 1): ymin = float(ylimits[0]); ymax = float(ylimits[1]) 
 

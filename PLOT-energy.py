@@ -19,8 +19,7 @@ import os
 def sortstrain(s,e):
     ss=[]
     ee=[]
-    ww=[]
-    for i in range(len(s)): ww.append(s[i])
+    ww = [s[i] for i in range(len(s))]
     ww.sort()
     for i in range(len(s)):
         ss.append(s[s.index(ww[i])])
@@ -53,15 +52,15 @@ if (os.path.exists('energy-vs-displacement')):
 if (os.path.exists('energy-vs-volume')): 
     inpf   = 'energy-vs-volume'
     xlabel = u'Volume [Bohr\u00B3]'
-     
+
 if (os.path.exists('energy-vs-ngrid')): 
     inpf   = 'energy-vs-ngridk'
     xlabel = r'ngridk'
-     
+
 if (os.path.exists('energy-vs-alat')): 
     inpf   = 'energy-vs-alat'
     xlabel = r'Lattice parameter [Bohr]'
-     
+
 if (str(os.path.exists(inpf))=='False'): 
     sys.exit("\nERROR: file "+inpf+" not found!\n")
 
@@ -79,7 +78,8 @@ dpipng = int(shell_value('DPIPNG',ev_list,300)[0])
 
 input_file = open(inpf,"r")
 
-x = [] ; y = []
+x = []
+y = []
 
 while True:
     line = input_file.readline()
@@ -95,7 +95,8 @@ xx,yy=sortstrain(x,y)
 
 rmin  = min(yy)
 srmin = u'\u2013 '+str(abs(rmin))
-if (rmin > 0): srmin = u'+ '+str(rmin)
+if (rmin > 0):
+    srmin = f'+ {str(rmin)}'
 
 for i in range(len(yy)): yy[i]=(yy[i]-rmin)
 
@@ -103,8 +104,10 @@ delta = (max(yy)-min(yy))
 dxx   = abs(max(xx)-min(xx))/18
 dyy   = abs(max(yy)-min(yy))/18
 
-xmin = min(xx)-dxx ; xmax = max(xx)+dxx
-ymin = min(yy)-dyy ; ymax = max(yy)+dyy
+xmin = min(xx)-dxx
+xmax = max(xx)+dxx
+ymin = min(yy)-dyy
+ymax = max(yy)+dyy
 
 #-------------------------------------------------------------------------------
 # set defauls parameters for the plot
@@ -126,7 +129,7 @@ plt.rcParams.update(params)
 plt.subplots_adjust(left=0.21, right=0.93,
                     bottom=0.18, top=0.88,
                     wspace=None, hspace=None)
-                    
+
 yfmt = ptk.ScalarFormatter(useOffset=True,useMathText=True)
 
 fig  = matplotlib.pyplot.figure(1, figsize=(8,5.5)) 
@@ -139,7 +142,7 @@ ax.text(-0.165,0.5,ylabel,size=fontlabel,
         transform=ax.transAxes,ha='center',va='center',rotation=90)
 ax.text(0.11,1.03,srmin,size=fonttext,
         transform=ax.transAxes,ha='left',va='center',rotation=0)
- 
+
 for line in ax.get_xticklines() + ax.get_yticklines():
     line.set_markersize(6)
     line.set_markeredgewidth(2)      
