@@ -47,8 +47,7 @@ def printnice(etam,bb,nfit,nderiv,orderstep,strainpoints,dc,dl):
 def sortstrain(s,e):
     ss=[]
     ee=[]
-    ww=[]
-    for i in range(len(s)): ww.append(s[i])
+    ww = [s[i] for i in range(len(s))]
     ww.sort()
     for i in range(len(s)):
         ss.append(s[s.index(ww[i])])
@@ -64,7 +63,7 @@ if (os.path.exists('quantum-espresso') or\
 
 if (os.path.exists('planar')): 
     input_planar = open('planar',"r")
-    factor=factor*float(input_planar.readline().strip().split()[0])
+    factor *= float(input_planar.readline().strip().split()[0])
 
 startorder=0
 if (os.path.exists('startorder')): 
@@ -76,13 +75,12 @@ if (str(os.path.exists('INFO-elastic-constants'))=='False'):
 if (str(os.path.exists('energy-vs-strain'))=='False'): 
     sys.exit("ERROR: file energy-vs-strain not found!\n")
 
-input_info = open('INFO-elastic-constants',"r")
-for i in range(3): line = input_info.readline()
-volume = float(input_info.readline().strip().split()[6])
-defcod = int(input_info.readline().strip().split()[3])
-deflab = input_info.readline().strip().split()[3]
-input_info.close()
-
+with open('INFO-elastic-constants',"r") as input_info:
+    for _ in range(3):
+        line = input_info.readline()
+    volume = float(input_info.readline().strip().split()[6])
+    defcod = int(input_info.readline().strip().split()[3])
+    deflab = input_info.readline().strip().split()[3]
 #-------------------------------------------------------------------------------
 
 maximum_strain = input("\nEnter maximum strain for the interpolation >>>> ")
@@ -130,43 +128,37 @@ for i in range(startorder,startorder+6):
     dumorder=order_of_derivative+orderstep*i
     orderlist.append(dumorder)   
 
-#-------------------------------------------------------------------------------
+with open('check-energy-derivatives',"w") as output_file:
+    n_ini = len(strain)
 
-output_file = open('check-energy-derivatives',"w")
+    while (len(strain) > order_of_derivative and len(strain) > 1): 
+        bb = []
+        n=len(strain)
+        etam=max(strain)
+        emin=min(strain)
+        etam=max(abs(etam),abs(emin))
+        for order in orderlist: 
+            cc=fit(order,strain,energy,n,order_of_derivative)
+            if (cc != 99999999):
+                bb.append(cc*unitconv)
+            else:
+                bb.append(cc)
 
-n_ini = len(strain)
+        printderiv(etam,bb,6,output_file)
+        if (n_ini == len(strain)):
+            printnice(etam,bb,6,order_of_derivative,orderstep,n_ini,defcod,deflab)
 
-while (len(strain) > order_of_derivative and len(strain) > 1): 
-    bb = []
-    n=len(strain)
-    etam=max(strain)
-    emin=min(strain)
-    etam=max(abs(etam),abs(emin))
-    for order in orderlist: 
-        cc=fit(order,strain,energy,n,order_of_derivative)
-        if (cc != 99999999):
-            bb.append(cc*unitconv)
-        else:
-            bb.append(cc)
+        if (abs(strain[0]+etam) < 1.e-7): 
+            strain.pop(0)
+            energy.pop(0)
 
-    printderiv(etam,bb,6,output_file)
-    if (n_ini == len(strain)):
-        printnice(etam,bb,6,order_of_derivative,orderstep,n_ini,defcod,deflab)
+        if (abs(strain[len(strain)-1]-etam) < 1.e-7): 
+            strain.pop()
+            energy.pop()
 
-    if (abs(strain[0]+etam) < 1.e-7): 
-        strain.pop(0)
-        energy.pop(0)
-
-    if (abs(strain[len(strain)-1]-etam) < 1.e-7): 
-        strain.pop()
-        energy.pop()
-
-output_file.close()
-
-output_file = open('order-of-derivative',"w")
-print >> output_file, order_of_derivative
-output_file.close()
-print "###########################################\n"
+with open('order-of-derivative',"w") as output_file:
+    factor=1.
+factor=1.
 os.system("export PDEFAULT=true; PLOT-checkderiv.py")
 os.system("unset PDEFAULT")
 

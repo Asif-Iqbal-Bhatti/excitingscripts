@@ -38,7 +38,7 @@ def mantissa(x):
 def purifica(x,y,ymin,ymax):
     checkp = 0
     j = -1
-    for i in range(len(y)):
+    for _ in range(len(y)):
         if (ymax < y[j] or ymin > y[j]): 
             del y[j]
             del x[j]     

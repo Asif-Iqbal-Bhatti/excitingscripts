@@ -19,8 +19,7 @@ import os
 def sortstrain(s,e):
     ss=[]
     ee=[]
-    ww=[]
-    for i in range(len(s)): ww.append(s[i])
+    ww = [s[i] for i in range(len(s))]
     ww.sort()
     for i in range(len(s)):
         ss.append(s[s.index(ww[i])])
@@ -39,14 +38,14 @@ def shell_value(variable,vlist,default):
 #-------------------------------------------------------------------------------
 
 def leggi(filin):
-    f = open(filin,"r")
-    x = [] ; y = []
-    while True:
-        line = f.readline().strip() 
-        if (len(line) == 0): break
-        x.append(float(line.split()[0]))
-        y.append(float(line.split()[1])) 
-    f.close()
+    with open(filin,"r") as f:
+        x = []
+        y = []
+        while True:
+            line = f.readline().strip() 
+            if (len(line) == 0): break
+            x.append(float(line.split()[0]))
+            y.append(float(line.split()[1]))
     return x,y
 
 #-------------------------------------------------------------------------------
